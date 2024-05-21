@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 from typing import Optional
+
 
 class Course(BaseModel):
     id: Optional[int] = Field(default=None, title="Id of the course")
