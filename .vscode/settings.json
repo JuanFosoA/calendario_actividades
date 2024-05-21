@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "C:/Users/juano/Documents/progbackend/proyecto_entorno/Scripts/python.exe",
+    "python.analysis.extraPaths": ["./src"],
+    "python.autoComplete.extraPaths": ["./src"]
+}
