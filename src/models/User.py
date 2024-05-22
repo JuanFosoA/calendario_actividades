@@ -39,7 +39,6 @@ class Admin(User):
     __tablename__ = "admins"
 
     id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    permission = Column(Boolean, default=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "admin",

@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
+from typing import List, Optional
+from src.schemas.CourseSchema import Course
 
 
 class Faculty(BaseModel):
+    id: int
     name: str = Field(min_length=10, max_length=60)
 
 
@@ -27,7 +29,7 @@ class User(BaseModel):
 
 
 class Admin(User):
-    permission: bool = Field(default=True)
+    pass
 
 
 class Student(User):
@@ -35,14 +37,24 @@ class Student(User):
 
 
 class Teacher(User):
-    faculty: Faculty
+    Faculty_id: Optional[int]
+    Courses_ids: Optional[List[int]]
 
+
+class TeacherCreate(BaseModel):
+    name: str = Field(min_length=4, max_length=60, title="Name of the user")
+    email: EmailStr = Field(min_length=6, max_length=64, title="Email of the user")
+    password: str = Field(max_length=64, title="Password of the user")
+    Faculty_id: Optional[int]
+    Courses_ids: Optional[List[int]]
+    
 
 class StudentCreate(BaseModel):
     name: str = Field(min_length=4, max_length=60, title="Name of the user")
     email: EmailStr = Field(min_length=6, max_length=64, title="Email of the user")
     password: str = Field(max_length=64, title="Password of the user")
     semester: int = Field(ge=1, le=10)
+    
 
 
 class UserLogin(BaseModel):

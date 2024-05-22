@@ -3,25 +3,34 @@ from sqlalchemy.orm import relationship
 from src.config.database import Base
 
 
-class Homework(Base):
-    __tablename__ = "homeworks"
-
+class Activity(Base):
+    __tablename__ = "activities"
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(100), nullable=False)
     description = Column(String(500))
-    due_date = Column(Date)
     is_active = Column(Boolean, default=True)
-    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
-    course = relationship("Course", back_populates="homeworks")
     type = Column(String(50))
-
+    duration = Column(Integer, nullable=False)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    
     __mapper_args__ = {
-        "polymorphic_identity": "assignment",
+        "polymorphic_identity": "activity",
         "polymorphic_on": type,
     }
 
+class Homework(Activity):
+    __tablename__ = "homeworks"
 
-class Exam(Homework):
+    id = Column(Integer, ForeignKey("activities.id"), primary_key=True)
+    due_date = Column(Date)
+
+    course = relationship("Course", back_populates="homeworks")
+    
+
+    
+
+
+class Exam(Activity):
     __tablename__ = "exams"
 
     id = Column(Integer, ForeignKey("homeworks.id"), primary_key=True)

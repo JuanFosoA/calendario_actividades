@@ -4,6 +4,7 @@ from src.config.database import SessionLocal
 from src.auth import auth_handler
 from src.schemas.UserSchema import UserLogin as UserLoginSchema
 from src.schemas.UserSchema import StudentCreate as StudentCreateSchema
+from src.schemas.UserSchema import User
 
 
 class AuthRepository:
@@ -49,3 +50,16 @@ class AuthRepository:
         refresh_token = auth_handler.encode_refresh_token(check_user)
 
         return access_token, refresh_token
+
+    def get_user_by_token(self, token: str) -> User:
+        try:
+            payload = auth_handler.decode_token(token)
+            user_email = payload["sub"]
+            user = UserRepository.get_user(user_email)
+            if not user:
+                raise HTTPException(status_code=401, detail="User not found")
+            return user
+        except HTTPException as e:
+            raise e
+        except Exception as e:
+            raise HTTPException(status_code=401, detail="Invalid token or user not found")
