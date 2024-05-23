@@ -50,7 +50,6 @@ class UserCreate(BaseModel):
 
 class TeacherCreate(UserCreate):
     faculty_id: Optional[int]
-    courses_ids: Optional[List[int]]
     
 
 class StudentCreate(UserCreate):

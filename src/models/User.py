@@ -63,7 +63,7 @@ class Teacher(User):
     __tablename__ = "teachers"
 
     id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    faculty_id = Column(Integer, ForeignKey("faculties.id"))
+    faculty_id = Column(Integer, ForeignKey("faculties.id"), nullable=True)
     faculty = relationship("Faculty", back_populates="teachers")
     courses = relationship("Course", back_populates="teacher")
 

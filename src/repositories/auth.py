@@ -13,10 +13,10 @@ from src.models.User import User, Admin, Student, Teacher
 class AuthRepository:
     def __init__(self) -> None:
         pass
-    
+
     def register_admin(self, user: UserCreateSchema) -> dict:
         db = SessionLocal()
-        if UserRepository(db).get_user(email=user.email) is not None:
+        if UserRepository(db).get_user_by_email(email=user.email) is not None:
             raise Exception("Account already exists")
         hashed_password = auth_handler.hash_password(password=user.password)
         new_user: UserCreateSchema = UserCreateSchema(
@@ -24,15 +24,15 @@ class AuthRepository:
             email=user.email,
             password=hashed_password,
             is_active=True,
-            user_type = "admin"
+            user_type="admin"
         )
         return UserRepository(db).create_user(new_user, Admin)
-    
+
     def register_student(self, user: StudentCreateSchema) -> dict:
         db = SessionLocal()
-        if UserRepository(db).get_user(email=user.email) is not None:
+        if UserRepository(db).get_user_by_email(email=user.email) is not None:
             raise Exception("Account already exists")
-        
+
         hashed_password = auth_handler.hash_password(password=user.password)
         new_user: StudentCreateSchema = StudentCreateSchema(
             name=user.name,
@@ -42,32 +42,28 @@ class AuthRepository:
             is_active=True,
         )
         return UserRepository(db).create_user(new_user, Student)
-    
 
     def register_teacher(self, user: TeacherCreateSchema) -> dict:
         db = SessionLocal()
-        
-        if UserRepository(db).get_user(email=user.email) is not None:
+
+        if UserRepository(db).get_user_by_email(email=user.email) is not None:
             raise Exception("Account already exists")
-        
-        if not FacultyRepository.get_faculty(db, faculty_id=user.faculty_id):
-                raise Exception("Faculty does not exist")
-        
-        courses = CourseRepository.get_courses_by_ids(db, ids=user.courses_ids)
-        if len(courses) != len(user.courses_ids):
-            raise Exception("One or more courses do not exist")
-        
+
+        if user.faculty_id <= 0:
+            user.faculty_id = None
+        elif not FacultyRepository(db).get_faculty(db, faculty_id=user.faculty_id):
+            raise Exception("Faculty does not exist")
+
         hashed_password = auth_handler.hash_password(password=user.password)
         new_user: TeacherCreateSchema = TeacherCreateSchema(
             name=user.name,
             email=user.email,
             password=hashed_password,
             faculty_id=user.faculty_id,
-            courses_ids=courses,
             is_active=True,
         )
         return UserRepository(db).create_user(new_user, Teacher)
-    
+
     def login_user(self, user: UserLoginSchema) -> dict:
         db = SessionLocal()
         check_user = UserRepository(db).get_user_by_email(email=user.email)
@@ -103,4 +99,5 @@ class AuthRepository:
         except HTTPException as e:
             raise e
         except Exception as e:
-            raise HTTPException(status_code=401, detail="Invalid token or user not found")
+            raise HTTPException(
+                status_code=401, detail="Invalid token or user not found")

@@ -48,3 +48,5 @@ def create_ingreso(
             content={"message": "Invalid credentials"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
+
+

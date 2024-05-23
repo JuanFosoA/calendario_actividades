@@ -10,8 +10,45 @@ from typing import List
 
 from src.schemas.UserSchema import Teacher, TeacherCreate
 from src.repositories.user import UserRepository
+from src.repositories.auth import AuthRepository
 
 teacher_router = APIRouter()
+
+
+@teacher_router.post(
+    "/",
+    tags=["teachers"],
+    response_model=dict,
+    description="Creates a new teacher"
+)
+def create_ingreso(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+    teacher: TeacherCreate = Body(),
+) -> dict:
+    if auth_handler.verify_jwt(credentials):
+        db = SessionLocal()
+        credential = credentials.credentials
+        user_id = auth_handler.decode_token(credential)["user.id"]
+        if UserRepository(db).get_user_type(user_id) == "admin":
+            new_course = AuthRepository().register_teacher(teacher)
+            return JSONResponse(
+                content={
+                    "message": "The ingreso was successfully created",
+                    "data": jsonable_encoder(new_course),
+                },
+                status_code=status.HTTP_201_CREATED,
+            )
+        else:
+            return JSONResponse(
+                content={"message": "User unauthorized"},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+    else:
+        return JSONResponse(
+            content={"message": "Invalid credentials"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+
 
 @teacher_router.get(
     "/",
