@@ -7,6 +7,5 @@ from fastapi.responses import JSONResponse
 from typing import List
 from src.config.database import SessionLocal
 from src.schemas.UserSchema import Admin
-from src.repositories. import EgresoRepository
 from fastapi.encoders import jsonable_encoder
 from src.auth import auth_handler

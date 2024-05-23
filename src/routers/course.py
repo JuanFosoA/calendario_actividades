@@ -16,10 +16,7 @@ course_router = APIRouter()
 
 
 @course_router.post(
-    "/",
-    tags=["courses"],
-    response_model=dict,
-    description="Creates a new ingreso"
+    "/", tags=["courses"], response_model=dict, description="Creates a new ingreso"
 )
 def create_course(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
@@ -54,5 +51,3 @@ def create_course(
             content={"message": str(err), "data": None},
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
-
-

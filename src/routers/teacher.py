@@ -16,10 +16,7 @@ teacher_router = APIRouter()
 
 
 @teacher_router.post(
-    "/",
-    tags=["teachers"],
-    response_model=dict,
-    description="Creates a new teacher"
+    "/", tags=["teachers"], response_model=dict, description="Creates a new teacher"
 )
 def create_ingreso(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
@@ -96,7 +93,10 @@ def get_teacher(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "teacher":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "teacher"
+        ):
             element = UserRepository(db).get_user(id)
             if not element:
                 return JSONResponse(
@@ -137,7 +137,10 @@ def update_ingreso(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "teacher":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "teacher"
+        ):
             element = UserRepository(db).update_user(id, student)
             return JSONResponse(
                 content={
@@ -173,11 +176,16 @@ def remove_ingreso(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "teacher":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "teacher"
+        ):
             UserRepository(db).delete_user(id)
             return JSONResponse(
                 content={
-                    "message": "The student was removed successfully", "data": None},
+                    "message": "The student was removed successfully",
+                    "data": None,
+                },
                 status_code=status.HTTP_200_OK,
             )
         else:

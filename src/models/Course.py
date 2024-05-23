@@ -17,4 +17,3 @@ class Course(Base):
     )
     homeworks = relationship("Homework", back_populates="course")
     exams = relationship("Exam", back_populates="course")
-
