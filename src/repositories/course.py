@@ -1,9 +1,15 @@
+from typing import List
 from sqlalchemy import func, select
 from models import Homework
 from schemas.UserSchema import Student
 from src.schemas.CourseSchema import Course as CourseSchema
 from src.schemas.CourseSchema import CourseCreate as CoursecreateSchema
 from src.models.Course import Course as CourseModel
+from src.models.User import Student as StudentModel
+from src.models.User import (
+    Student as StudentModel,
+    student_course_association,
+)
 from src.repositories.user import UserRepository
 
 
