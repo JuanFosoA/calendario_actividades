@@ -24,7 +24,7 @@ auth_router = APIRouter()
 )
 def register_user(user: StudentCreateSchema = Body()) -> dict:
     try:
-        new_user = AuthRepository().register_admin(user)
+        new_user = AuthRepository().register_student(user)
         return JSONResponse(
             content={
                 "message": "The user was successfully registered",
