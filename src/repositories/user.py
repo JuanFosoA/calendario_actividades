@@ -1,7 +1,10 @@
+from sqlalchemy import select
+from repositories.course import CourseRepository
 from src.schemas.UserSchema import User as UserSchema, Admin as AdminSchema
 from src.schemas.UserSchema import UserCreate as UserCreateSchema
 from src.models.User import (
     Student as StudentModel,
+    student_course_association,
     Admin as AdminModel,
     User as UserModel,
 )
@@ -48,3 +51,17 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(new_user)
         return new_user
+    
+    def get_student_course_ids(self, student_id: int) -> List[int]:
+        result = self.db.execute(
+            select([student_course_association.c.course_id])
+            .where(student_course_association.c.student_id == student_id)
+        ).fetchall()
+        return [row[0] for row in result]
+    
+    def get_student_taks_charge(self, student_id: int) -> int:
+        student_couses = self.get_student_course_ids(student_id)
+        hours = 0
+        for i in student_couses:
+            hours += CourseRepository(self.db).get_total_homework_duration(i)
+        return hours
