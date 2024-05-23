@@ -1,6 +1,7 @@
 from src.schemas.CourseSchema import Course as CourseSchema
 from src.schemas.CourseSchema import CourseCreate as CoursecreateSchema
 from src.models.Course import Course as CourseModel
+from src.repositories.user import UserRepository
 
 class CourseRepository:
     def __init__(self, db) -> None:
@@ -16,6 +17,8 @@ class CourseRepository:
     def create_course(self, faculty: CoursecreateSchema) -> dict:
         new_course = CourseModel(**faculty.model_dump())
         if new_course.teacher_id <= 0:
+            new_course.teacher_id = None
+        elif not UserRepository(self.db).get_user(new_course.teacher_id):
             new_course.teacher_id = None
         self.db.add(new_course)
         self.db.commit()

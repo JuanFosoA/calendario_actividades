@@ -21,32 +21,38 @@ course_router = APIRouter()
     response_model=dict,
     description="Creates a new ingreso"
 )
-def create_ingreso(
+def create_course(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     course: CourseCreate = Body(),
 ) -> dict:
-    if auth_handler.verify_jwt(credentials):
-        db = SessionLocal()
-        credential = credentials.credentials
-        user_id = auth_handler.decode_token(credential)["user.id"]
-        if UserRepository(db).get_user_type(user_id) == "admin":
-            new_course = CourseRepository(db).create_course(course)
-            return JSONResponse(
-                content={
-                    "message": "The ingreso was successfully created",
-                    "data": jsonable_encoder(new_course),
-                },
-                status_code=status.HTTP_201_CREATED,
-            )
+    try:
+        if auth_handler.verify_jwt(credentials):
+            db = SessionLocal()
+            credential = credentials.credentials
+            user_id = auth_handler.decode_token(credential)["user.id"]
+            if UserRepository(db).get_user_type(user_id) == "admin":
+                new_course = CourseRepository(db).create_course(course)
+                return JSONResponse(
+                    content={
+                        "message": "The ingreso was successfully created",
+                        "data": jsonable_encoder(new_course),
+                    },
+                    status_code=status.HTTP_201_CREATED,
+                )
+            else:
+                return JSONResponse(
+                    content={"message": "User unauthorized"},
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                )
         else:
             return JSONResponse(
-                content={"message": "User unauthorized"},
+                content={"message": "Invalid credentials"},
                 status_code=status.HTTP_401_UNAUTHORIZED,
             )
-    else:
+    except Exception as err:
         return JSONResponse(
-            content={"message": "Invalid credentials"},
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"message": str(err), "data": None},
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
 
 
