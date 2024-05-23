@@ -1,5 +1,4 @@
 from sqlalchemy import select
-from repositories.course import CourseRepository
 from src.schemas.UserSchema import User as UserSchema, Admin as AdminSchema
 from src.schemas.UserSchema import UserCreate as UserCreateSchema
 from src.models.User import (
@@ -60,8 +59,9 @@ class UserRepository:
         return [row[0] for row in result]
     
     def get_student_taks_charge(self, student_id: int) -> int:
-        student_couses = self.get_student_course_ids(student_id)
+        student_courses = self.get_student_course_ids(student_id)
+        student = self.get_user(student_id)
         hours = 0
-        for i in student_couses:
-            hours += CourseRepository(self.db).get_total_homework_duration(i)
+        for i in student_courses:
+            hours += self.   CourseRepository(self.db).get_total_homework_duration(i)
         return hours

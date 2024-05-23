@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy import func, select
-from models import Homework
-from schemas.UserSchema import Student
+from src.models import Homework
+from src.schemas.UserSchema import Student
 from src.schemas.CourseSchema import Course as CourseSchema
 from src.schemas.CourseSchema import CourseCreate as CoursecreateSchema
 from src.models.Course import Course as CourseModel
@@ -63,9 +63,7 @@ class CourseRepository:
         self.db.refresh(new_course)
     
     def get_total_homework_duration(self, course_id: int) -> int:
-        total_duration = self.db.query(
-            func.sum(Homework.duration)
-        ).filter(Homework.course_id == course_id).scalar()
+        total_duration = self.db.query(func.sum(Homework.duration)).filter(Homework.course_id == course_id).scalar()
         return total_duration or 0
 
     def get_course_students(self, course_id:int) -> list[int]:

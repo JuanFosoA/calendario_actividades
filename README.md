@@ -16,12 +16,12 @@ Este proyecto es una API REST para visualizar las horas de actividades de estudi
 
 1. Clona el repositorio:
     ```sh
-    git clone https://github.com/JuanFosoA/calendario_actividades.git
+    git clone https://github.com/tuusuario/school-management-api.git
     ```
 
 2. Navega al directorio del proyecto:
     ```sh
-    cd calendario_actividades
+    cd school-management-api
     ```
 
 3. Instala las dependencias:
@@ -29,7 +29,12 @@ Este proyecto es una API REST para visualizar las horas de actividades de estudi
     pip install -r requirements.txt
     ```
 
-4. Ejecuta la aplicación:
+4. Configura la base de datos:
+    ```sh
+    python setup_database.py
+    ```
+
+5. Ejecuta la aplicación:
     ```sh
     uvicorn main:app --reload
     ```
@@ -45,14 +50,12 @@ La API proporciona los siguientes endpoints para gestionar estudiantes, profesor
 - **Obtener Todos los Estudiantes**
     - `GET /api/v1/student`
     - Respuesta: Lista de todos los estudiantes
-    - **Solo Administrador**
 
 - **Obtener un Estudiante por ID**
     - `GET /api/v1/student/{id}`
     - Parámetros:
         - `id` (entero): El ID del estudiante
     - Respuesta: Detalles del estudiante con el ID especificado
-    - **Solo Administrador**
 
 - **Actualizar un Estudiante**
     - `PUT /api/v1/student/{id}`
@@ -74,14 +77,12 @@ La API proporciona los siguientes endpoints para gestionar estudiantes, profesor
 - **Obtener Todos los Profesores**
     - `GET /api/v1/teacher`
     - Respuesta: Lista de todos los profesores
-    - **Solo Administrador**
 
 - **Obtener un Profesor por ID**
     - `GET /api/v1/teacher/{id}`
     - Parámetros:
         - `id` (entero): El ID del profesor
     - Respuesta: Detalles del profesor con el ID especificado
-    - **Solo Administrador**
 
 - **Actualizar un Profesor**
     - `PUT /api/v1/teacher/{id}`
@@ -127,5 +128,22 @@ La API proporciona los siguientes endpoints para gestionar estudiantes, profesor
 
 ## Restricciones de Administrador
 
+Ciertos endpoints están restringidos solo a administradores. Estos incluyen:
+
+- **Actualizar y eliminar estudiantes**
+- **Actualizar y eliminar profesores**
+- **Actualizar y eliminar cursos**
+
 Para acceder a estos endpoints, debes estar autenticado como administrador. Los mecanismos de autenticación y autorización deben estar implementados en la API para hacer cumplir estas restricciones.
 
+## Contribuyendo
+
+1. Haz un fork del repositorio
+2. Crea tu rama de característica (`git checkout -b feature/tu-caracteristica`)
+3. Realiza tus cambios (`git commit -am 'Agrega una nueva característica'`)
+4. Sube los cambios a tu rama (`git push origin feature/tu-caracteristica`)
+5. Crea un nuevo Pull Request
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
