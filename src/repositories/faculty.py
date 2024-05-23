@@ -2,6 +2,7 @@ from src.schemas.UserSchema import Faculty as FacultySchema
 from src.schemas.UserSchema import FacultyCreate as FacultyCreateSchema
 from src.models.User import Faculty as FacultyModel
 
+
 class FacultyRepository:
     def __init__(self, db) -> None:
         self.db = db

@@ -7,8 +7,10 @@ class Faculty(BaseModel):
     id: int
     name: str = Field(min_length=10, max_length=60)
 
+
 class FacultyCreate(BaseModel):
     name: str = Field(min_length=10, max_length=60)
+
 
 class User(BaseModel):
     id: Optional[int] = Field(default=None, title="Id of the user")
@@ -48,17 +50,13 @@ class UserCreate(BaseModel):
     email: EmailStr = Field(min_length=6, max_length=64, title="Email of the user")
     password: str = Field(max_length=64, title="Password of the user")
 
+
 class TeacherCreate(UserCreate):
     faculty_id: Optional[int]
-    
+
 
 class StudentCreate(UserCreate):
     semester: Optional[int] = Field(le=10)
-
-class assign_student_course(BaseModel):
-    student_id: int
-    course_id: int
-
 
 class UserLogin(BaseModel):
     email: EmailStr = Field(

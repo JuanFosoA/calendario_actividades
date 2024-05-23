@@ -60,7 +60,10 @@ def get_student(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "student":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "student"
+        ):
             element = UserRepository(db).get_user(id)
             if not element:
                 return JSONResponse(
@@ -101,7 +104,10 @@ def update_student(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "student":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "student"
+        ):
             element = UserRepository(db).update_user(id, student)
             return JSONResponse(
                 content={
@@ -137,11 +143,16 @@ def remove_student(
         credential = credentials.credentials
         user_id = auth_handler.decode_token(credential)["user.id"]
         user = UserRepository(db).get_user(user_id)
-        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "student":
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "student"
+        ):
             UserRepository(db).delete_user(id)
             return JSONResponse(
                 content={
-                    "message": "The student was removed successfully", "data": None},
+                    "message": "The student was removed successfully",
+                    "data": None,
+                },
                 status_code=status.HTTP_200_OK,
             )
         else:

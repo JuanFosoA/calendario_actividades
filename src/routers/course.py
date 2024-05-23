@@ -9,7 +9,6 @@ from src.auth import auth_handler
 from typing import List
 
 from src.schemas.CourseSchema import Course, CourseCreate
-from src.schemas.UserSchema import assign_student_course
 from src.repositories.course import CourseRepository
 from src.repositories.user import UserRepository
 
@@ -17,8 +16,7 @@ course_router = APIRouter()
 
 
 @course_router.post(
-    "/",
-    tags=["courses"],
+    "/", tags=["courses"],
     response_model=dict,
     description="Creates a new ingreso"
 )
@@ -57,14 +55,15 @@ def create_course(
         )
 
 @course_router.post(
-    "/assign",
+    "/{course_id}/student/{student_id}",
     tags=["courses"],
     response_model=List[Course],
     description="Returns all teachers stored",
 )
 def assign_student_to_course(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
-    student_course: assign_student_course = Body(),
+    course_id: int,
+    student_id: int, 
 ) -> dict:
     try:
         if auth_handler.verify_jwt(credentials):
@@ -72,7 +71,7 @@ def assign_student_to_course(
             credential = credentials.credentials
             user_id = auth_handler.decode_token(credential)["user.id"]
             if UserRepository(db).get_user_type(user_id) == "admin":
-                new_assign = CourseRepository(db).add_student_to_course(student_course.student_id, student_course.course_id)
+                new_assign = CourseRepository(db).add_student_to_course(student_id, course_id)
                 return JSONResponse(
                     content={
                         "message": "The association was successfully made",
@@ -161,6 +160,11 @@ def get_course(
             return JSONResponse(
                 content=jsonable_encoder(element), status_code=status.HTTP_200_OK
             )
+        elif user.user_type == "student":
+            result = CourseRepository(db).get_course_by_student_id(id, user_id)
+            return JSONResponse(
+                content=jsonable_encoder(result), status_code=status.HTTP_200_OK
+            )
         else:
             return JSONResponse(
                 content={"message": "User unauthorized"},
@@ -172,3 +176,77 @@ def get_course(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
+
+@course_router.put(
+    "/{id}",
+    tags=["courses"],
+    response_model=dict,
+    description="Updates the data of specific course",
+)
+def update_course(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+    id: int = Path(ge=1),
+    course: CourseCreate = Body(),
+) -> dict:
+    if auth_handler.verify_jwt(credentials):
+        db = SessionLocal()
+        credential = credentials.credentials
+        user_id = auth_handler.decode_token(credential)["user.id"]
+        user = UserRepository(db).get_user(user_id)
+        if user.user_type == "admin" and UserRepository(db).get_user_type(id) == "student":
+            element = CourseRepository(db).update_user(id, course)
+            return JSONResponse(
+                content={
+                    "message": "The course was successfully updated",
+                    "data": jsonable_encoder(element),
+                },
+                status_code=status.HTTP_200_OK,
+            )
+        else:
+            return JSONResponse(
+                content={"message": "User unauthorized"},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+    else:
+        return JSONResponse(
+            content={"message": "Invalid credentials"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+        
+@course_router.delete(
+    "/{id}",
+    tags=["courses"],
+    response_model=dict,
+    description="Removes specific course",
+)
+def remove_student(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+    id: int = Path(ge=1),
+) -> dict:
+    if auth_handler.verify_jwt(credentials):
+        db = SessionLocal()
+        credential = credentials.credentials
+        user_id = auth_handler.decode_token(credential)["user.id"]
+        user = UserRepository(db).get_user(user_id)
+        if (
+            user.user_type == "admin"
+            and UserRepository(db).get_user_type(id) == "student"
+        ):
+            CourseRepository(db).delete_course(id)
+            return JSONResponse(
+                content={
+                    "message": "The course was removed successfully",
+                    "data": None,
+                },
+                status_code=status.HTTP_200_OK,
+            )
+        else:
+            return JSONResponse(
+                content={"message": "User unauthorized"},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+    else:
+        return JSONResponse(
+            content={"message": "Invalid credentials"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )

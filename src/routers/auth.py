@@ -5,7 +5,12 @@ from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.encoders import jsonable_encoder
 from src.repositories.auth import AuthRepository
 from src.schemas.UserSchema import UserLogin as UserLoginSchema
-from src.schemas.UserSchema import StudentCreate as StudentCreateSchema, TeacherCreate as TeacherCreateSchema, User, UserCreate as UserCreateSchema
+from src.schemas.UserSchema import (
+    StudentCreate as StudentCreateSchema,
+    TeacherCreate as TeacherCreateSchema,
+    User,
+    UserCreate as UserCreateSchema,
+)
 from src.auth.has_access import security
 
 auth_router = APIRouter()
@@ -32,7 +37,8 @@ def register_user(user: StudentCreateSchema = Body()) -> dict:
             content={"message": str(err), "data": None},
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
-    
+
+
 @auth_router.post(
     "/login", tags=["auth"], response_model=dict, description="Authenticate an user"
 )

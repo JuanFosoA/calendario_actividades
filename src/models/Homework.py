@@ -12,11 +12,12 @@ class Activity(Base):
     type = Column(String(50))
     duration = Column(Integer, nullable=False)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
-    
+
     __mapper_args__ = {
         "polymorphic_identity": "activity",
         "polymorphic_on": type,
     }
+
 
 class Homework(Activity):
     __tablename__ = "homeworks"
@@ -25,9 +26,6 @@ class Homework(Activity):
     due_date = Column(Date)
 
     course = relationship("Course", back_populates="homeworks")
-    
-
-    
 
 
 class Exam(Activity):

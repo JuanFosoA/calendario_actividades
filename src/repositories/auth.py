@@ -5,7 +5,10 @@ from src.repositories.course import CourseRepository
 from src.config.database import SessionLocal
 from src.auth import auth_handler
 from src.schemas.UserSchema import UserLogin as UserLoginSchema
-from src.schemas.UserSchema import StudentCreate as StudentCreateSchema, TeacherCreate as TeacherCreateSchema
+from src.schemas.UserSchema import (
+    StudentCreate as StudentCreateSchema,
+    TeacherCreate as TeacherCreateSchema,
+)
 from src.schemas.UserSchema import User, UserCreate as UserCreateSchema
 from src.models.User import User, Admin, Student, Teacher
 
@@ -24,7 +27,7 @@ class AuthRepository:
             email=user.email,
             password=hashed_password,
             is_active=True,
-            user_type="admin"
+            user_type="admin",
         )
         return UserRepository(db).create_user(new_user, Admin)
 
@@ -100,4 +103,5 @@ class AuthRepository:
             raise e
         except Exception as e:
             raise HTTPException(
-                status_code=401, detail="Invalid token or user not found")
+                status_code=401, detail="Invalid token or user not found"
+            )
