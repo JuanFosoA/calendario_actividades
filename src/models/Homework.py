@@ -33,7 +33,7 @@ class Homework(Activity):
 class Exam(Activity):
     __tablename__ = "exams"
 
-    id = Column(Integer, ForeignKey("homeworks.id"), primary_key=True)
+    id = Column(Integer, ForeignKey("activities.id"), primary_key=True)
     course = relationship("Course", back_populates="exams")
     duration = Column(Integer)
 
