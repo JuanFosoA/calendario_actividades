@@ -57,6 +57,9 @@ class Student(User):
     __mapper_args__ = {
         "polymorphic_identity": "student",
     }
+    
+    def add_course(self, course):
+        self.courses.append(course)
 
 
 class Teacher(User):

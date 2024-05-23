@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from src.config.database import Base
 from src.models.Homework import Activity, Homework, Exam
 
-
 class Course(Base):
     __tablename__ = "courses"
 

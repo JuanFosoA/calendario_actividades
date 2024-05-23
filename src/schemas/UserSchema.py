@@ -58,7 +58,6 @@ class TeacherCreate(UserCreate):
 class StudentCreate(UserCreate):
     semester: Optional[int] = Field(le=10)
 
-
 class UserLogin(BaseModel):
     email: EmailStr = Field(
         min_length=6, max_length=64, alias="username", title="Email of the user"

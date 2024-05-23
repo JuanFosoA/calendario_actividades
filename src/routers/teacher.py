@@ -18,7 +18,7 @@ teacher_router = APIRouter()
 @teacher_router.post(
     "/", tags=["teachers"], response_model=dict, description="Creates a new teacher"
 )
-def create_ingreso(
+def create_teacher(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     teacher: TeacherCreate = Body(),
 ) -> dict:
@@ -53,7 +53,7 @@ def create_ingreso(
     response_model=List[Teacher],
     description="Returns all teachers stored",
 )
-def get_all_students(
+def get_all_teachers(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
 ) -> List[Teacher]:
     if auth_handler.verify_jwt(credentials):
@@ -127,7 +127,7 @@ def get_teacher(
     response_model=dict,
     description="Updates the data of specific teacher",
 )
-def update_ingreso(
+def update_teacher(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     id: int = Path(ge=1),
     student: TeacherCreate = Body(),
@@ -167,7 +167,7 @@ def update_ingreso(
     response_model=dict,
     description="Removes specific teacher",
 )
-def remove_ingreso(
+def remove_teacher(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     id: int = Path(ge=1),
 ) -> dict:
