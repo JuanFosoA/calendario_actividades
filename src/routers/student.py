@@ -91,7 +91,7 @@ def get_student(
     response_model=dict,
     description="Updates the data of specific ingreso",
 )
-def update_ingreso(
+def update_student(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     id: int = Path(ge=1),
     student: StudentCreate = Body(),
@@ -128,7 +128,7 @@ def update_ingreso(
     response_model=dict,
     description="Removes specific ingreso",
 )
-def remove_ingreso(
+def remove_student(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     id: int = Path(ge=1),
 ) -> dict:

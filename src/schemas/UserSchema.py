@@ -54,7 +54,10 @@ class TeacherCreate(UserCreate):
 
 class StudentCreate(UserCreate):
     semester: Optional[int] = Field(le=10)
-    
+
+class assign_student_course(BaseModel):
+    student_id: int
+    course_id: int
 
 
 class UserLogin(BaseModel):
